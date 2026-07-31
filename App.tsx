@@ -73,7 +73,7 @@ function HomeScreen() {
   return (
     <ScrollView className="flex-1 bg-sky-400">
       <SafeAreaView className="flex-1">
-        <View className="p-6">
+        <View className="p-6 ">
           <Text className="text-white text-2xl font-bold text-center">
             {now?.name ?? 'Weather'}
           </Text>
