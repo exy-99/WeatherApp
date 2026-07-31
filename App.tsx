@@ -12,16 +12,16 @@ import {
   getDailyWeather,
 } from './src/api/weatherapi';
 import {
-  currentWeatherData,
-  DailyWeatherData,
+  CurrentWeatherResponse,
+  DailyForecastItem,
 } from './src/types/weather';
 
 const DEFAULT_LAT = 51.5072;
 const DEFAULT_LON = -0.1276;
 
 function HomeScreen() {
-  const [current, setCurrent] = useState<currentWeatherData[]>([]);
-  const [daily, setDaily] = useState<DailyWeatherData[]>([]);
+  const [current, setCurrent] = useState<CurrentWeatherResponse | null>(null);
+  const [daily, setDaily] = useState<DailyForecastItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,32 +68,34 @@ function HomeScreen() {
     );
   }
 
-  const now = current[0];
-  const today = daily[0];
+  const now = current;
 
   return (
     <ScrollView className="flex-1 bg-sky-400">
       <SafeAreaView className="flex-1">
         <View className="p-6">
           <Text className="text-white text-2xl font-bold text-center">
-            London
+            {now?.name ?? 'Weather'}
           </Text>
           {now && (
             <View className="items-center my-6">
               <Text className="text-white text-7xl font-bold">
-                {Math.round(now.temp)}°
+                {Math.round(now.main.temp)}°
+              </Text>
+              <Text className="text-white text-xl capitalize">
+                {now.weather[0]?.description ?? ''}
               </Text>
               <Text className="text-white mt-2">
-                Feels like {Math.round(now.feels_like)}° · Humidity{' '}
-                {now.humidity}%
+                Feels like {Math.round(now.main.feels_like)}° · Humidity{' '}
+                {now.main.humidity}%
               </Text>
             </View>
           )}
 
-          {today && (
+          {daily.length > 0 && (
             <View className="bg-white/20 rounded-2xl p-4 mb-4">
               <Text className="text-white font-semibold mb-2">
-                7-Day Forecast
+                Daily Forecast
               </Text>
               {daily.slice(0, 7).map(item => (
                 <View
@@ -106,7 +108,7 @@ function HomeScreen() {
                     })}
                   </Text>
                   <Text className="text-white capitalize">
-                    {item.weather?.[0]?.description ?? ''}
+                    {item.weather[0]?.description ?? ''}
                   </Text>
                   <Text className="text-white">
                     {Math.round(item.temp.max)}° / {Math.round(item.temp.min)}°

@@ -95,6 +95,59 @@ export interface OneCallDailyResponse extends PagintedResponse {
   timezone_offset: number;
   data: DailyWeatherData[];
 }
+
+export interface CurrentWeatherResponse {
+  coord: { lon: number; lat: number };
+  weather: weatherCondition[];
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+  visibility: number;
+  wind: { speed: number; deg: number; gust?: number };
+  clouds: { all: number };
+  dt: number;
+  sys: { country: string; sunrise?: number; sunset?: number };
+  timezone: number;
+  name: string;
+  cod: number;
+}
+
+export interface ForecastItem {
+  dt: number;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+  };
+  weather: weatherCondition[];
+  clouds: { all: number };
+  wind: { speed: number; deg: number; gust?: number };
+  visibility: number;
+  pop: number;
+  dt_txt: string;
+}
+
+export interface ForecastResponse {
+  cod: string;
+  message: number;
+  cnt: number;
+  list: ForecastItem[];
+  city: { id: number; name: string; country: string };
+}
+
+export interface DailyForecastItem {
+  dt: number;
+  temp: { max: number; min: number };
+  weather: weatherCondition[];
+}
 export interface WeatherData {
   current:currentWeatherData;
   forecast: forcastWeatherData[];

@@ -6,17 +6,15 @@ import {
   DAILY_WEATHER_URL,
 } from '@env';
 import {
-  currentWeatherData,
-  forcastWeatherData,
-  DailyWeatherData,
-  OneCallCurrentResponse,
-  OneCallForecastResponse,
-  OneCallDailyResponse,
+  CurrentWeatherResponse,
+  ForecastItem,
+  ForecastResponse,
+  DailyForecastItem,
 } from '../types/weather';
 
 const api = axios.create({ timeout: 10000 });
 
-type Units = 'metric' ;
+type Units = 'metric' | 'imperial';
 
 const buildUrl = (template: string, lat: number, lon: number, units: Units) =>
   template
@@ -28,31 +26,50 @@ export async function getCurrentWeather(
   lat: number,
   lon: number,
   units: Units = 'metric',
-): Promise<currentWeatherData[]> {
-  const { data } = await api.get<OneCallCurrentResponse>(
+): Promise<CurrentWeatherResponse> {
+  const { data } = await api.get<CurrentWeatherResponse>(
     buildUrl(CURRENT_WEATHER_URL, lat, lon, units),
   );
-  return data.data;
+  return data;
 }
 
 export async function getHourlyWeather(
   lat: number,
   lon: number,
   units: Units = 'metric',
-): Promise<forcastWeatherData[]> {
-  const { data } = await api.get<OneCallForecastResponse>(
+): Promise<ForecastItem[]> {
+  const { data } = await api.get<ForecastResponse>(
     buildUrl(HOURLY_WEATHER_URL, lat, lon, units),
   );
-  return data.data;
+  return data.list;
 }
 
 export async function getDailyWeather(
   lat: number,
   lon: number,
   units: Units = 'metric',
-): Promise<DailyWeatherData[]> {
-  const { data } = await api.get<OneCallDailyResponse>(
+): Promise<DailyForecastItem[]> {
+  const { data } = await api.get<ForecastResponse>(
     buildUrl(DAILY_WEATHER_URL, lat, lon, units),
   );
-  return data.data;
+  return aggregateDaily(data.list);
+}
+
+function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
+  const days = new Map<string, DailyForecastItem>();
+  for (const item of list) {
+    const key = new Date(item.dt * 1000).toDateString();
+    const existing = days.get(key);
+    if (existing) {
+      existing.temp.max = Math.max(existing.temp.max, item.main.temp_max);
+      existing.temp.min = Math.min(existing.temp.min, item.main.temp_min);
+    } else {
+      days.set(key, {
+        dt: item.dt,
+        temp: { max: item.main.temp_max, min: item.main.temp_min },
+        weather: item.weather,
+      });
+    }
+  }
+  return Array.from(days.values());
 }
