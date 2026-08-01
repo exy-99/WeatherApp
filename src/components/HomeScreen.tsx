@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  ScrollView,
   Text,
   View,
   TouchableOpacity,
@@ -10,6 +9,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getCurrentWeather, getDailyWeather } from '../api/weatherapi';
 import { CurrentWeatherResponse, DailyForecastItem } from '../types/weather';
 import { useLocation } from '../hooks/useLocation';
+import HomeIsland from './HomeIsland';
+import ForecastTabs from './ForecastTabs';
 
 function HomeScreen() {
   const { coords, loading: locationLoading, error: locationError, loadLocation } =
@@ -75,58 +76,34 @@ function HomeScreen() {
     );
   }
 
-  const now = current;
+  const location = `${current.name}, ${current.sys.country}`;
+  const today = daily[0];
 
   return (
-    <ScrollView className="flex-1 bg-sky-400">
+    <View className="flex-1 bg-sky-400">
       <SafeAreaView className="flex-1">
-        <View className="p-6">
-          <Text className="text-white text-2xl font-bold text-center">
-            {now.name}
-          </Text>
-          {now && (
-            <View className="items-center my-6">
-              <Text className="text-white text-7xl font-bold">
-                {Math.round(now.main.temp)}°
-              </Text>
-              <Text className="text-white text-xl capitalize">
-                {now.weather[0]?.description ?? ''}
-              </Text>
-              <Text className="text-white mt-2">
-                Feels like {Math.round(now.main.feels_like)}° · Humidity{' '}
-                {now.main.humidity}%
-              </Text>
-            </View>
-          )}
-
-          {daily.length > 0 && (
-            <View className="bg-white/20 rounded-2xl p-4 mb-4">
-              <Text className="text-white font-semibold mb-2">
-                Daily Forecast
-              </Text>
-              {daily.slice(0, 7).map(item => (
-                <View
-                  key={item.dt}
-                  className="flex-row justify-between items-center py-2 border-b border-white/20"
-                >
-                  <Text className="text-white">
-                    {new Date(item.dt * 1000).toLocaleDateString(undefined, {
-                      weekday: 'short',
-                    })}
-                  </Text>
-                  <Text className="text-white capitalize">
-                    {item.weather[0]?.description ?? ''}
-                  </Text>
-                  <Text className="text-white">
-                    {Math.round(item.temp.max)}° / {Math.round(item.temp.min)}°
-                  </Text>
-                </View>
-              ))}
-            </View>
-          )}
+        <View className="flex-1">
+          <View className="flex-[2]">
+            <HomeIsland
+              location={location}
+              temp={current.main.temp}
+              condition={current.weather[0]?.description ?? ''}
+              icon={current.weather[0]?.icon ?? ''}
+              high={today?.temp.max ?? current.main.temp_max}
+              low={today?.temp.min ?? current.main.temp_min}
+              feelsLike={current.main.feels_like}
+              humidity={current.main.humidity}
+              windSpeed={current.wind.speed}
+              windDeg={current.wind.deg}
+              pressure={current.main.pressure}
+            />
+          </View>
+          <View className="flex-[3]">
+            <ForecastTabs days={daily.slice(0, 3)} />
+          </View>
         </View>
       </SafeAreaView>
-    </ScrollView>
+    </View>
   );
 }
 

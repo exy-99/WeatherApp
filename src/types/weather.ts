@@ -147,6 +147,12 @@ export interface DailyForecastItem {
   dt: number;
   temp: { max: number; min: number };
   weather: weatherCondition[];
+  feels_like: number;
+  pressure: number;
+  humidity: number;
+  wind_speed: number;
+  wind_deg: number;
+  pop: number;
 }
 export interface WeatherData {
   current:currentWeatherData;

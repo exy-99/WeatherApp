@@ -63,13 +63,46 @@ function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
     if (existing) {
       existing.temp.max = Math.max(existing.temp.max, item.main.temp_max);
       existing.temp.min = Math.min(existing.temp.min, item.main.temp_min);
+      existing.humidity += item.main.humidity;
+      existing.pressure += item.main.pressure;
+      existing.pop = Math.max(existing.pop, item.pop ?? 0);
+      if (item.wind.speed > existing.wind_speed) {
+        existing.wind_speed = item.wind.speed;
+        existing.wind_deg = item.wind.deg;
+      }
+      if (isCloserToNoon(item.dt, existing.dt)) {
+        existing.dt = item.dt;
+        existing.feels_like = item.main.feels_like;
+        existing.weather = item.weather;
+      }
     } else {
       days.set(key, {
         dt: item.dt,
         temp: { max: item.main.temp_max, min: item.main.temp_min },
         weather: item.weather,
+        feels_like: item.main.feels_like,
+        pressure: item.main.pressure,
+        humidity: item.main.humidity,
+        wind_speed: item.wind.speed,
+        wind_deg: item.wind.deg,
+        pop: item.pop ?? 0,
       });
     }
   }
-  return Array.from(days.values());
+  return Array.from(days.values()).map(day => {
+    const samples = list.filter(
+      item => new Date(item.dt * 1000).toDateString() === new Date(day.dt * 1000).toDateString(),
+    );
+    const count = samples.length;
+    return {
+      ...day,
+      humidity: Math.round(day.humidity / count),
+      pressure: Math.round(day.pressure / count),
+    };
+  });
+}
+
+function isCloserToNoon(candidate: number, current: number): boolean {
+  const noon = (date: number) => Math.abs(new Date(date * 1000).getHours() - 12);
+  return noon(candidate) < noon(current);
 }
