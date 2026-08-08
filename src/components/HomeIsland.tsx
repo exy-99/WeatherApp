@@ -15,17 +15,7 @@ export interface HomeIslandProps {
   pressure: number;
 }
 
-const STAT_STYLES =
-  'flex-1 flex-row items-center justify-between rounded-2xl bg-white/20 px-4 py-3';
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <View className="flex-1">
-      <Text className="text-white/70 text-xs">{label}</Text>
-      <Text className="text-white font-semibold text-base mt-0.5">{value}</Text>
-    </View>
-  );
-}
 
 function HomeIsland({
   location,
@@ -34,11 +24,7 @@ function HomeIsland({
   icon,
   high,
   low,
-  feelsLike,
-  humidity,
-  windSpeed,
-  windDeg,
-  pressure,
+  
 }: HomeIslandProps) {
   return (
     <View className="flex-1 bg-white/20 rounded-[2.5rem] p-6 m-4 mb-2 justify-between">
