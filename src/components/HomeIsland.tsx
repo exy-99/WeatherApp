@@ -69,18 +69,7 @@ function HomeIsland({
         </Text>
       </View>
 
-      <View className="gap-2">
-        <View className={STAT_STYLES}>
-          <Stat label="Feels like" value={`${Math.round(feelsLike)}°`} />
-          <View className="w-px h-8 bg-white/20 mx-3" />
-          <Stat label="Humidity" value={`${humidity}%`} />
-        </View>
-        <View className={STAT_STYLES}>
-          <Stat label="Wind" value={`${windDeg}° ${Math.round(windSpeed)} m/s`} />
-          <View className="w-px h-8 bg-white/20 mx-3" />
-          <Stat label="Pressure" value={`${pressure} hPa`} />
-        </View>
-      </View>
+      
     </View>
   );
 }
