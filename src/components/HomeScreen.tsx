@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getCurrentWeather, getDailyWeather } from '../api/weatherapi';
+import { getCurrentWeather, getDailyWeather, reverseGeocode } from '../api/weatherapi';
 import { CurrentWeatherResponse, DailyForecastItem } from '../types/weather';
 import { useLocation } from '../hooks/useLocation';
 import HomeIsland from './HomeIsland';
@@ -19,6 +19,7 @@ function HomeScreen() {
   const [daily, setDaily] = useState<DailyForecastItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [displayLocation, setDisplayLocation] = useState<string>('');
 
   const loadWeather = useCallback(async () => {
     if (!coords) {
@@ -27,12 +28,14 @@ function HomeScreen() {
     setLoading(true);
     setError(null);
     try {
-      const [currentData, dailyData] = await Promise.all([
+      const [currentData, dailyData, geoLocation] = await Promise.all([
         getCurrentWeather(coords.latitude, coords.longitude),
         getDailyWeather(coords.latitude, coords.longitude),
+        reverseGeocode(coords.latitude, coords.longitude),
       ]);
       setCurrent(currentData);
       setDaily(dailyData);
+      setDisplayLocation(geoLocation);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -76,7 +79,7 @@ function HomeScreen() {
     );
   }
 
-  const location = `${current.name}, ${current.sys.country}`;
+  const location = displayLocation || `${current.name}, ${current.sys.country}`;
   const today = daily[0];
 
   return (

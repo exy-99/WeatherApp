@@ -55,6 +55,26 @@ export async function getDailyWeather(
   return aggregateDaily(data.list);
 }
 
+export async function reverseGeocode(lat: number, lon: number): Promise<string> {
+  try {
+    const { data } = await api.get(
+      `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`,
+    );
+    if (data && data.length > 0) {
+      const location = data[0];
+      const parts = [
+        location.name,
+        location.state,
+        location.country,
+      ].filter(Boolean);
+      return parts.join(', ');
+    }
+  } catch (error) {
+    console.warn('Reverse geocoding failed:', error);
+  }
+  return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+}
+
 function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
   const days = new Map<string, DailyForecastItem>();
   for (const item of list) {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { PermissionsAndroid, Platform, NativeModules } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 
 export interface Coords {
@@ -12,6 +12,22 @@ interface UseLocationResult {
   loading: boolean;
   error: string | null;
   loadLocation: () => Promise<void>;
+}
+
+async function hasPreciseLocationPermission(): Promise<boolean> {
+  if (Platform.OS !== 'android' || Platform.Version < 31) {
+    return true;
+  }
+  const { check } = NativeModules.PermissionsAndroid || {};
+  if (check) {
+    try {
+      const result = await check('android.permission.ACCESS_FINE_LOCATION');
+      return result === 'granted';
+    } catch {
+      return true;
+    }
+  }
+  return true;
 }
 
 async function ensurePermission(): Promise<void> {
@@ -27,6 +43,10 @@ async function ensurePermission(): Promise<void> {
         throw new Error('Location permission was denied');
       }
     }
+    const preciseGranted = await hasPreciseLocationPermission();
+    if (!preciseGranted) {
+      throw new Error('Precise location permission is required. Please enable "Precise location" in app settings.');
+    }
   } else {
     await new Promise<void>((resolve, reject) => {
       Geolocation.requestAuthorization(
@@ -39,15 +59,15 @@ async function ensurePermission(): Promise<void> {
 
 function getCurrentPosition(): Promise<Coords> {
   return new Promise<Coords>((resolve, reject) => {
-    Geolocation.getCurrentPosition(
-      position =>
-        resolve({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        }),
-      error => reject(new Error(error.message)),
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
-    );
+Geolocation.getCurrentPosition(
+        position =>
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }),
+        error => reject(new Error(error.message)),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+      );
   });
 }
 
