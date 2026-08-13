@@ -24,7 +24,6 @@ function HomeIsland({
   icon,
   high,
   low,
-  
 }: HomeIslandProps) {
   return (
     <View className="flex-1 bg-white/20 rounded-[2.5rem] p-6 m-4 mb-2 justify-between">
