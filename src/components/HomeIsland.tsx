@@ -15,8 +15,6 @@ export interface HomeIslandProps {
   pressure: number;
 }
 
-
-
 function HomeIsland({
   location,
   temp,
@@ -53,8 +51,6 @@ function HomeIsland({
           H: {Math.round(high)}° L: {Math.round(low)}°
         </Text>
       </View>
-
-      
     </View>
   );
 }
