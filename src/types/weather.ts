@@ -159,3 +159,22 @@ export interface WeatherData {
   forecast: forcastWeatherData[];
   daily: DailyWeatherData[];
 }
+
+// Geocoding API response (OpenWeatherMap geo/1.0/direct)
+export interface GeocodingResult {
+  name: string;
+  local_names?: Record<string, string>;
+  lat: number;
+  lon: number;
+  country: string;
+  state?: string;
+}
+
+// Search result for UI display
+export interface SearchLocationResult {
+  displayName: string;
+  lat: number;
+  lon: number;
+  country: string;
+  state?: string;
+}

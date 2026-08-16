@@ -7,49 +7,101 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getCurrentWeather, getDailyWeather, reverseGeocode } from '../api/weatherapi';
-import { CurrentWeatherResponse, DailyForecastItem } from '../types/weather';
+import { CurrentWeatherResponse, DailyForecastItem, SearchLocationResult } from '../types/weather';
 import { useLocation } from '../hooks/useLocation';
+import { usePersistedLocation } from '../hooks/usePersistedLocation';
 import HomeIsland from './HomeIsland';
 import ForecastTabs from './ForecastTabs';
+import { SearchModal } from './SearchModal';
 
 function HomeScreen() {
-  const { coords, loading: locationLoading, error: locationError, loadLocation } =
+  const { coords, loading: locationLoading, error: locationError, loadLocation, setManualLocation } =
     useLocation();
+  const { savedLocation, loading: persistenceLoading, saveLocation, clearLocation } = usePersistedLocation();
   const [current, setCurrent] = useState<CurrentWeatherResponse | null>(null);
   const [daily, setDaily] = useState<DailyForecastItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
   const [displayLocation, setDisplayLocation] = useState<string>('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [manualLocation, setManualLocationState] = useState<SearchLocationResult | null>(null);
 
-  const loadWeather = useCallback(async () => {
-    if (!coords) {
+  const loadWeather = useCallback(async (latitude?: number, longitude?: number, isManual = false) => {
+    const targetLat = latitude ?? coords?.latitude;
+    const targetLon = longitude ?? coords?.longitude;
+    
+    if (targetLat === undefined || targetLon === undefined) {
       return;
     }
     setLoading(true);
-    setError(null);
+    if (!isManual) {
+      setError(null);
+    }
+    setUpdateError(null);
     try {
       const [currentData, dailyData, geoLocation] = await Promise.all([
-        getCurrentWeather(coords.latitude, coords.longitude),
-        getDailyWeather(coords.latitude, coords.longitude),
-        reverseGeocode(coords.latitude, coords.longitude),
+        getCurrentWeather(targetLat, targetLon),
+        getDailyWeather(targetLat, targetLon),
+        reverseGeocode(targetLat, targetLon),
       ]);
       setCurrent(currentData);
       setDaily(dailyData);
       setDisplayLocation(geoLocation);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
+      if (isManual) {
+        setUpdateError('Couldn\'t update weather');
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
   }, [coords]);
 
+  // Load persisted location on app start
   useEffect(() => {
-    if (coords) {
+    if (!persistenceLoading && savedLocation && !manualLocation) {
+      setManualLocationState({
+        displayName: savedLocation.displayName,
+        lat: savedLocation.lat,
+        lon: savedLocation.lon,
+        country: '',
+        state: undefined,
+      });
+      setManualLocation({ latitude: savedLocation.lat, longitude: savedLocation.lon });
+      loadWeather(savedLocation.lat, savedLocation.lon, true);
+    }
+  }, [persistenceLoading, savedLocation, manualLocation, loadWeather, setManualLocation]);
+
+  useEffect(() => {
+    if (coords && !manualLocation && !savedLocation) {
       loadWeather();
     }
-  }, [coords, loadWeather]);
+  }, [coords, loadWeather, manualLocation, savedLocation]);
 
-  const isLoading = locationLoading || loading;
+  const handleOpenSearch = () => setShowSearch(true);
+
+  const handleSelectLocation = (location: SearchLocationResult) => {
+    setShowSearch(false);
+    setManualLocationState(location);
+    setManualLocation({ latitude: location.lat, longitude: location.lon });
+    saveLocation(location);
+    loadWeather(location.lat, location.lon, true);
+  };
+
+  const handleUseCurrentLocation = () => {
+    setShowSearch(false);
+    setManualLocationState(null);
+    setManualLocation(null);
+    clearLocation();
+    loadLocation();
+  };
+
+  const handleDismissUpdateError = () => setUpdateError(null);
+
+  const isLoading = locationLoading || loading || persistenceLoading;
   const errorMessage = locationError ?? error;
 
   if (isLoading) {
@@ -84,6 +136,14 @@ function HomeScreen() {
 
   return (
     <View className="flex-1 bg-sky-400">
+      {updateError && (
+        <View className="bg-amber-500/90 px-4 py-2 flex-row items-center justify-between w-full">
+          <Text className="text-white text-sm">{updateError}</Text>
+          <TouchableOpacity onPress={handleDismissUpdateError} className="p-2">
+            <Text className="text-white text-sm font-medium">Dismiss</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <SafeAreaView className="flex-1">
         <View className="flex-1">
           <View className="flex-[2]">
@@ -99,6 +159,7 @@ function HomeScreen() {
               windSpeed={current.wind.speed}
               windDeg={current.wind.deg}
               pressure={current.main.pressure}
+              onLocationPress={handleOpenSearch}
             />
           </View>
           <View className="flex-[3]">
@@ -106,6 +167,12 @@ function HomeScreen() {
           </View>
         </View>
       </SafeAreaView>
+      <SearchModal
+        isOpen={showSearch}
+        onClose={() => setShowSearch(false)}
+        onSelectLocation={handleSelectLocation}
+        onUseCurrentLocation={handleUseCurrentLocation}
+      />
     </View>
   );
 }

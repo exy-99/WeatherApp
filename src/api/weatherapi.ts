@@ -4,12 +4,14 @@ import {
   CURRENT_WEATHER_URL,
   HOURLY_WEATHER_URL,
   DAILY_WEATHER_URL,
+  GEOCODING_URL,
 } from '@env';
 import {
   CurrentWeatherResponse,
   ForecastItem,
   ForecastResponse,
   DailyForecastItem,
+  GeocodingResult,
 } from '../types/weather';
 
 const api = axios.create({ timeout: 10000 });
@@ -74,6 +76,16 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
   }
   return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 }
+
+// Forward geocoding: search locations by query string
+export const geocode = async (query: string): Promise<GeocodingResult[]> => {
+  const url = `${GEOCODING_URL}?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`;
+  
+  const response = await api.get<GeocodingResult[]>(url);
+  return response.data;
+};
+
+export type { GeocodingResult };
 
 function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
   const days = new Map<string, DailyForecastItem>();

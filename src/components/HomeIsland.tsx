@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
 
 export interface HomeIslandProps {
   location: string;
@@ -13,6 +13,7 @@ export interface HomeIslandProps {
   windSpeed: number;
   windDeg: number;
   pressure: number;
+  onLocationPress?: () => void;
 }
 
 function HomeIsland({
@@ -22,13 +23,16 @@ function HomeIsland({
   icon,
   high,
   low,
+  onLocationPress,
 }: HomeIslandProps) {
   return (
     <View className="flex-1 bg-white/20 rounded-[2.5rem] p-6 m-4 mb-2 justify-between">
       <View className="items-center">
-        <Text className="text-white text-2xl font-bold text-center">
-          {location}
-        </Text>
+        <TouchableOpacity onPress={onLocationPress} className="w-full" activeOpacity={0.7}>
+          <Text className="text-white text-2xl font-bold text-center">
+            {location}
+          </Text>
+        </TouchableOpacity>
         <Text className="text-white/70 text-sm mt-1">
           {new Date().toLocaleDateString(undefined, {
             weekday: 'long',
