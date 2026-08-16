@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Text,
@@ -60,6 +60,9 @@ function HomeScreen() {
     }
   }, [coords]);
 
+  const loadWeatherRef = useRef(loadWeather);
+  loadWeatherRef.current = loadWeather;
+
   // Load persisted location on app start
   useEffect(() => {
     if (!persistenceLoading && savedLocation && !manualLocation) {
@@ -71,15 +74,15 @@ function HomeScreen() {
         state: undefined,
       });
       setManualLocation({ latitude: savedLocation.lat, longitude: savedLocation.lon });
-      loadWeather(savedLocation.lat, savedLocation.lon, true);
+      loadWeatherRef.current(savedLocation.lat, savedLocation.lon, true);
     }
-  }, [persistenceLoading, savedLocation, manualLocation, loadWeather, setManualLocation]);
+  }, [persistenceLoading, savedLocation, manualLocation, loadWeatherRef, setManualLocation]);
 
   useEffect(() => {
     if (coords && !manualLocation && !savedLocation) {
-      loadWeather();
+      loadWeatherRef.current();
     }
-  }, [coords, loadWeather, manualLocation, savedLocation]);
+  }, [coords, manualLocation, savedLocation, loadWeatherRef]);
 
   const handleOpenSearch = () => setShowSearch(true);
 

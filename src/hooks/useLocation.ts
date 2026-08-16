@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState , useRef } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -57,11 +57,13 @@ export function useLocation(): UseLocationResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [manualCoords, setManualCoords] = useState<Coords | null>(null);
+  const manualCoordsRef = useRef(manualCoords);
+  manualCoordsRef.current = manualCoords;
 
   const loadLocation = useCallback(async () => {
     // If manual coords are set, use them instead of GPS
-    if (manualCoords) {
-      setCoords(manualCoords);
+    if (manualCoordsRef.current) {
+      setCoords(manualCoordsRef.current);
       setLoading(false);
       return;
     }
@@ -79,10 +81,11 @@ export function useLocation(): UseLocationResult {
     } finally {
       setLoading(false);
     }
-  }, [manualCoords]);
+  }, []);
 
   const setManualLocation = useCallback((newCoords: Coords | null) => {
     setManualCoords(newCoords);
+    manualCoordsRef.current = newCoords;
     if (newCoords) {
       setCoords(newCoords);
     }
@@ -94,3 +97,4 @@ export function useLocation(): UseLocationResult {
 
   return { coords, loading, error, loadLocation, setManualLocation };
 }
+

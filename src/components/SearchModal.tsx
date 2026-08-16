@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { geocode, GeocodingResult } from '../api/weatherapi';
+import { geocode } from '../api/weatherapi';
 import { SearchLocationResult } from '../types/weather';
 import { SearchResultItem } from './SearchResultItem';
 import Icon from 'react-native-vector-icons/Ionicons';
