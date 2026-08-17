@@ -78,8 +78,8 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
       >
       <View className="flex-1 flex-col">
         {/* Header */}
-        <View className="px-4 py-4 border-b border-white/10 flex-row items-center justify-between">
-          <Text className="text-white text-xl font-semibold">Search Location</Text>
+        <View className="px-4  py-4 border-b border-white/10 flex-row items-center justify-between">
+          <Text className="text-white text-xl font-semibold pt-10">Search Location</Text>
           <TouchableOpacity onPress={onClose} className="p-2">
             <Icon name="close" size={24} color="white" />
           </TouchableOpacity>
