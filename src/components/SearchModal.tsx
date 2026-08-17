@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Modal } from 'react-native';
 import { geocode } from '../api/weatherapi';
 import { SearchLocationResult } from '../types/weather';
 import { SearchResultItem } from './SearchResultItem';
@@ -69,14 +69,13 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
     return () => { if (debounceTimer) clearTimeout(debounceTimer); };
   }, [debounceTimer]);
 
-  if (!isOpen) return null;
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-      className="bg-black/95 fixed inset-0 z-50"
-    >
+    <Modal visible={isOpen} animationType="slide" onRequestClose={onClose}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+        className="bg-black"
+      >
       <View className="flex-1 flex-col">
         {/* Header */}
         <View className="px-4 py-4 border-b border-white/10 flex-row items-center justify-between">
@@ -132,6 +131,7 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
           )}
         </ScrollView>
       </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </Modal>
   );
 };
