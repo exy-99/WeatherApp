@@ -1,3 +1,31 @@
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
+const mockSafeAreaContext = () => {
+  const React = require('react');
+  const insets = { top: 0, right: 0, bottom: 0, left: 0 };
+  const frame = { x: 0, y: 0, width: 320, height: 640 };
+
+  const SafeAreaProvider = ({ children }) => children;
+  SafeAreaProvider.displayName = 'SafeAreaProvider';
+
+  const SafeAreaView = ({ children }) => children;
+  SafeAreaView.displayName = 'SafeAreaView';
+
+  return {
+    SafeAreaProvider,
+    SafeAreaView,
+    useSafeAreaInsets: () => insets,
+    useSafeAreaFrame: () => frame,
+    initialWindowMetrics: { frame, insets },
+    SafeAreaInsetsContext: React.createContext(insets),
+    SafeAreaFrameContext: React.createContext(frame),
+  };
+};
+
+jest.mock('react-native-safe-area-context', () => mockSafeAreaContext());
+
 jest.mock('@react-native-community/geolocation', () => ({
   getCurrentPosition: jest.fn(success =>
     success({ coords: { latitude: 28.61, longitude: 77.2 } }),
@@ -20,8 +48,34 @@ jest.mock('./src/api/weatherapi', () => ({
         humidity: 40,
       },
       wind: { speed: 3.1, deg: 90 },
+      clouds: { all: 20 },
+      visibility: 10000,
+      dt: Math.floor(Date.now() / 1000),
+      timezone: 0,
     }),
   ),
+  getHourlyWeather: jest.fn(() => {
+    const now = Math.floor(Date.now() / 1000);
+    return Promise.resolve(
+      [30, 31, 29, 28].map((temp, i) => ({
+        dt: now + i * 3600,
+        main: {
+          temp,
+          feels_like: temp + 1,
+          temp_min: temp - 2,
+          temp_max: temp + 3,
+          pressure: 1010,
+          humidity: 40,
+        },
+        weather: [{ description: 'clear sky', icon: '01d' }],
+        clouds: { all: 20 },
+        wind: { speed: 3.1, deg: 90 },
+        visibility: 10000,
+        pop: [0.1, 0.2, 0.1, 0][i],
+        dt_txt: '',
+      })),
+    );
+  }),
   getDailyWeather: jest.fn(() =>
     Promise.resolve([
       {

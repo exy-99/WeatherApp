@@ -1,11 +1,11 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import HomeScreen from './src/components/HomeScreen';
+import DashboardScreen from './src/components/dashboard/DashboardScreen';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <HomeScreen />
+      <DashboardScreen />
     </SafeAreaProvider>
   );
 }
