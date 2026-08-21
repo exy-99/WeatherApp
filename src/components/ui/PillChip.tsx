@@ -1,11 +1,12 @@
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Text } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import AnimatedPressable from './AnimatedPressable';
 import Icon from './Icon';
 import { colors } from '../../constants/colors';
 
@@ -37,7 +38,7 @@ export default function PillChip({ label, icon, variant, onPress, accessibilityL
     transform: reducedMotion ? [] : [{ scale: scale.value }],
   }));
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={onPress}
       onPressIn={() => {
         'worklet';
@@ -66,6 +67,6 @@ export default function PillChip({ label, icon, variant, onPress, accessibilityL
           {label}
         </Text>
       </Animated.View>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

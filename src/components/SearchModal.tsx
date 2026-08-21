@@ -135,3 +135,4 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
     </Modal>
   );
 };
+
