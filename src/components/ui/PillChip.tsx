@@ -40,9 +40,11 @@ export default function PillChip({ label, icon, variant, onPress, accessibilityL
     <Pressable
       onPress={onPress}
       onPressIn={() => {
+        'worklet';
         scale.value = withSpring(0.95);
       }}
       onPressOut={() => {
+        'worklet';
         scale.value = withSpring(1);
       }}
       accessibilityLabel={accessibilityLabel}

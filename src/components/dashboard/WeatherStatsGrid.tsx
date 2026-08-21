@@ -34,9 +34,11 @@ function StatCard({ stat }: { stat: StatMetric }) {
       style={{ marginBottom: 8, width: '48%' }}
       animatedStyle={animatedStyle}
       onTouchStart={() => {
+        'worklet';
         scale.value = withSpring(0.97);
       }}
       onTouchEnd={() => {
+        'worklet';
         scale.value = withSpring(1);
       }}
       accessibilityRole="none"
