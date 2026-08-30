@@ -23,6 +23,7 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
   const performSearch = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setResults([]);
+      setError(null);
       return;
     }
     setLoading(true);

@@ -9,6 +9,10 @@ export const useSharedValue = init => ({ value: init });
 
 export const useAnimatedStyle = factory => factory();
 
+export const useDerivedValue = factory => ({ value: factory() });
+
+export const useAnimatedProps = factory => factory();
+
 export const useReducedMotion = () => false;
 
 export const withSpring = toValue => toValue;

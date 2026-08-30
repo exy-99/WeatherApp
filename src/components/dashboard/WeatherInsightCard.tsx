@@ -3,7 +3,7 @@ import { Image, Text, View } from 'react-native';
 import Card from '../ui/Card';
 import PillChip from '../ui/PillChip';
 import Icon from '../ui/Icon';
-import { InsightChip } from '../../hooks/useWeatherInsights';
+import { InsightChip } from '../../types/dashboard';
 import { colors } from '../../constants/colors';
 
 interface WeatherInsightCardProps {

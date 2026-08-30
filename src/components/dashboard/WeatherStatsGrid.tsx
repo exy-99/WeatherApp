@@ -10,14 +10,7 @@ import Card from '../ui/Card';
 import Icon from '../ui/Icon';
 import ProgressBar from '../ui/ProgressBar';
 import { colors } from '../../constants/colors';
-
-interface StatMetric {
-  id: string;
-  label: string;
-  value: string;
-  icon: string;
-  progress: number;
-}
+import { StatMetric } from '../../types/dashboard';
 
 interface WeatherStatsGridProps {
   stats: StatMetric[];
@@ -31,8 +24,7 @@ function StatCard({ stat }: { stat: StatMetric }) {
   }));
   return (
     <Animated.View
-      style={{ marginBottom: 8, width: '48%' }}
-      animatedStyle={animatedStyle}
+      style={[{ marginBottom: 8, width: '48%' }, animatedStyle]}
       onTouchStart={() => {
         'worklet';
         scale.value = withSpring(0.97);

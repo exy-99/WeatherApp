@@ -122,7 +122,7 @@ function DashboardContent({
           </View>
         )}
         <View className="gap-6">
-          <AppHeader onSettingsPress={() => {}} onNotificationsPress={() => {}} />
+          <AppHeader  />
           <TouchableOpacity onPress={onOpenSearch} activeOpacity={0.7}>
             <LocationDateStrip location={location} />
           </TouchableOpacity>
@@ -222,10 +222,10 @@ function DashboardScreen() {
   }, [persistenceLoading, savedLocation, manualLocation, loadWeatherRef, setManualLocation]);
 
   useEffect(() => {
-    if (coords && !manualLocation && !savedLocation) {
+    if (coords && !manualLocation && !savedLocation && !persistenceLoading) {
       loadWeatherRef.current();
     }
-  }, [coords, manualLocation, savedLocation, loadWeatherRef]);
+  }, [coords, manualLocation, savedLocation, persistenceLoading, loadWeatherRef]);
 
   const handleOpenSearch = () => setShowSearch(true);
 

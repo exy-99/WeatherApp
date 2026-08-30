@@ -91,4 +91,6 @@ jest.mock('./src/api/weatherapi', () => ({
       },
     ]),
   ),
+  reverseGeocode: jest.fn(() => Promise.resolve('New Delhi, IN')),
+  geocode: jest.fn(() => Promise.resolve([])),
 }));

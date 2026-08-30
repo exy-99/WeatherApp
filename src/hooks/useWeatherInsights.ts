@@ -1,11 +1,5 @@
 import { CurrentWeatherResponse, DailyForecastItem } from '../types/weather';
-
-export interface InsightChip {
-  id: string;
-  label: string;
-  icon: string;
-  variant: 'primary' | 'secondary' | 'warning';
-}
+import { InsightChip } from '../types/dashboard';
 
 export function useWeatherInsights(
   current: CurrentWeatherResponse,

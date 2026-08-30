@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, Text } from 'react-native';
 import Animated, {
   Easing,
-  useDerivedValue,
+  useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withDelay,
@@ -24,7 +24,7 @@ function AnimatedHourlyCard({ item, index }: { item: ForecastItem; index: number
       ? 1
       : withDelay(index * 40, withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) })),
   );
-  const animatedStyle = useDerivedValue(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     opacity: progress.value,
     transform: [{ translateY: (1 - progress.value) * 8 }],
   }));

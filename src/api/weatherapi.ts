@@ -87,7 +87,7 @@ export const geocode = async (query: string): Promise<GeocodingResult[]> => {
 
 export type { GeocodingResult };
 
-function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
+export function aggregateDaily(list: ForecastItem[]): DailyForecastItem[] {
   const days = new Map<string, DailyForecastItem>();
   for (const item of list) {
     const key = new Date(item.dt * 1000).toDateString();

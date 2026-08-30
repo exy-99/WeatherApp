@@ -59,8 +59,7 @@ export default function PillChip({ label, icon, variant, onPress, accessibilityL
       className="flex-row items-center rounded-full px-4 py-2.5 gap-1.5"
     >
       <Animated.View
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
-        animatedStyle={animatedStyle}
+        style={[{ flexDirection: 'row', alignItems: 'center', gap: 6 }, animatedStyle]}
       >
         {icon ? <Icon name={icon} size={16} color={variantStyle.textColor} /> : null}
         <Text className="text-sm font-medium" style={{ color: variantStyle.textColor }}>
