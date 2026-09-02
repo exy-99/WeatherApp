@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, Text } from 'react-native';
 import Animated, {
   Easing,
@@ -19,11 +19,15 @@ interface HourlyTimelineProps {
 
 function AnimatedHourlyCard({ item, index }: { item: ForecastItem; index: number }) {
   const reducedMotion = useReducedMotion();
-  const progress = useSharedValue(
-    reducedMotion
-      ? 1
-      : withDelay(index * 40, withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) })),
-  );
+  const progress = useSharedValue(reducedMotion ? 1 : 0);
+  useEffect(() => {
+    if (!reducedMotion) {
+      progress.value = withDelay(
+        index * 40,
+        withTiming(1, { duration: 200, easing: Easing.out(Easing.ease) }),
+      );
+    }
+  }, [reducedMotion, index, progress]);
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: progress.value,
     transform: [{ translateY: (1 - progress.value) * 8 }],
