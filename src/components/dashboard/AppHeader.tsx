@@ -10,7 +10,7 @@ function AppHeader() {
       <View className="flex-row items-center">
         <Image
           source={require('../../assets/logo.webp')}
-          className="h-9 w-9 rounded-2xl"
+          className="h-11 w-11 rounded-2xl"
         />
         <Text className="ml-2 text-lg font-bold" style={{ color: colors.textPrimary }}>
           Weather-App
