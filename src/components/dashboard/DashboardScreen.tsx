@@ -81,7 +81,10 @@ function DashboardContent({
       label: 'Pressure',
       value: `${current.main.pressure} hPa`,
       icon: 'speedometer-outline',
-      progress: Math.min(Math.max((current.main.pressure - 950) / (1050 - 950), 0), 1),
+      progress: Math.min(
+        Math.max((current.main.pressure - 950) / (1050 - 950), 0),
+        1,
+      ),
     },
     {
       id: 'precipitation',
@@ -122,7 +125,7 @@ function DashboardContent({
           </View>
         )}
         <View className="gap-6">
-          <AppHeader  />
+          <AppHeader />
           <TouchableOpacity onPress={onOpenSearch} activeOpacity={0.7}>
             <LocationDateStrip location={location} />
           </TouchableOpacity>
@@ -156,9 +159,19 @@ function DashboardContent({
 }
 
 function DashboardScreen() {
-  const { coords, loading: locationLoading, error: locationError, loadLocation, setManualLocation } =
-    useLocation();
-  const { savedLocation, loading: persistenceLoading, saveLocation, clearLocation } = usePersistedLocation();
+  const {
+    coords,
+    loading: locationLoading,
+    error: locationError,
+    loadLocation,
+    setManualLocation,
+  } = useLocation();
+  const {
+    savedLocation,
+    loading: persistenceLoading,
+    saveLocation,
+    clearLocation,
+  } = usePersistedLocation();
   const [current, setCurrent] = useState<CurrentWeatherResponse | null>(null);
   const [hourly, setHourly] = useState<ForecastItem[]>([]);
   const [daily, setDaily] = useState<DailyForecastItem[]>([]);
@@ -167,42 +180,48 @@ function DashboardScreen() {
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [displayLocation, setDisplayLocation] = useState<string>('');
   const [showSearch, setShowSearch] = useState(false);
-  const [manualLocation, setManualLocationState] = useState<SearchLocationResult | null>(null);
+  const [manualLocation, setManualLocationState] =
+    useState<SearchLocationResult | null>(null);
 
-  const loadWeather = useCallback(async (latitude?: number, longitude?: number, isManual = false) => {
-    const targetLat = latitude ?? coords?.latitude;
-    const targetLon = longitude ?? coords?.longitude;
+  const loadWeather = useCallback(
+    async (latitude?: number, longitude?: number, isManual = false) => {
+      const targetLat = latitude ?? coords?.latitude;
+      const targetLon = longitude ?? coords?.longitude;
 
-    if (targetLat === undefined || targetLon === undefined) {
-      return;
-    }
-    setLoading(true);
-    if (!isManual) {
-      setError(null);
-    }
-    setUpdateError(null);
-    try {
-      const [currentData, hourlyData, dailyData, geoLocation] = await Promise.all([
-        getCurrentWeather(targetLat, targetLon),
-        getHourlyWeather(targetLat, targetLon),
-        getDailyWeather(targetLat, targetLon),
-        reverseGeocode(targetLat, targetLon),
-      ]);
-      setCurrent(currentData);
-      setHourly(hourlyData);
-      setDaily(dailyData);
-      setDisplayLocation(geoLocation);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
-      if (isManual) {
-        setUpdateError('Couldn\'t update weather');
-      } else {
-        setError(errorMessage);
+      if (targetLat === undefined || targetLon === undefined) {
+        return;
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [coords]);
+      setLoading(true);
+      if (!isManual) {
+        setError(null);
+      }
+      setUpdateError(null);
+      try {
+        const [currentData, hourlyData, dailyData, geoLocation] =
+          await Promise.all([
+            getCurrentWeather(targetLat, targetLon),
+            getHourlyWeather(targetLat, targetLon),
+            getDailyWeather(targetLat, targetLon),
+            reverseGeocode(targetLat, targetLon),
+          ]);
+        setCurrent(currentData);
+        setHourly(hourlyData);
+        setDaily(dailyData);
+        setDisplayLocation(geoLocation);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Something went wrong';
+        if (isManual) {
+          setUpdateError("Couldn't update weather");
+        } else {
+          setError(errorMessage);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [coords],
+  );
 
   const loadWeatherRef = useRef(loadWeather);
   loadWeatherRef.current = loadWeather;
@@ -216,16 +235,31 @@ function DashboardScreen() {
         country: '',
         state: undefined,
       });
-      setManualLocation({ latitude: savedLocation.lat, longitude: savedLocation.lon });
+      setManualLocation({
+        latitude: savedLocation.lat,
+        longitude: savedLocation.lon,
+      });
       loadWeatherRef.current(savedLocation.lat, savedLocation.lon, true);
     }
-  }, [persistenceLoading, savedLocation, manualLocation, loadWeatherRef, setManualLocation]);
+  }, [
+    persistenceLoading,
+    savedLocation,
+    manualLocation,
+    loadWeatherRef,
+    setManualLocation,
+  ]);
 
   useEffect(() => {
     if (coords && !manualLocation && !savedLocation && !persistenceLoading) {
       loadWeatherRef.current();
     }
-  }, [coords, manualLocation, savedLocation, persistenceLoading, loadWeatherRef]);
+  }, [
+    coords,
+    manualLocation,
+    savedLocation,
+    persistenceLoading,
+    loadWeatherRef,
+  ]);
 
   const handleOpenSearch = () => setShowSearch(true);
 
@@ -261,7 +295,10 @@ function DashboardScreen() {
   if (errorMessage || !current) {
     return (
       <View className="flex-1 items-center justify-center bg-[#F5F7F8] px-8">
-        <Text className="text-lg text-center mb-4" style={{ color: colors.textPrimary }}>
+        <Text
+          className="text-lg text-center mb-4"
+          style={{ color: colors.textPrimary }}
+        >
           {errorMessage ?? 'Weather data is unavailable'}
         </Text>
         <TouchableOpacity
