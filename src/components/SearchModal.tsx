@@ -3,7 +3,7 @@ import { View, Text, TextInput, ScrollView, KeyboardAvoidingView, Platform, Touc
 import { geocode } from '../api/weatherapi';
 import { SearchLocationResult } from '../types/weather';
 import { SearchResultItem } from './SearchResultItem';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from './ui/Icon';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -74,15 +74,14 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
     <Modal visible={isOpen} animationType="slide" onRequestClose={onClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-        className="bg-black"
+        className="flex-1 bg-black"
       >
       <View className="flex-1 flex-col">
         {/* Header */}
         <View className="px-4  py-4 border-b border-white/10 flex-row items-center justify-between">
           <Text className="text-white text-xl font-semibold pt-10">Search Location</Text>
           <TouchableOpacity onPress={onClose} className="p-2">
-            <Icon name="close" size={24} color="white" />
+            <Icon name="X" size={24} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -101,8 +100,8 @@ export const SearchModal = ({ isOpen, onClose, onSelectLocation, onUseCurrentLoc
         {/* Current Location Button (D-03) */}
         <TouchableOpacity onPress={handleCurrentLocationPress} className="px-4 py-3 border-b border-white/10">
           <View className="flex-row items-center gap-3">
-            <Icon name="location" size={22} color="#4ade80" />
-            <Text className="text-white text-base font-medium text-green-400">Use my current location</Text>
+            <Icon name="MapPin" size={22} color="#4ade80" />
+            <Text className="text-white text-base font-medium ">Use my current location</Text>
           </View>
         </TouchableOpacity>
 

@@ -1,6 +1,6 @@
 import { SearchLocationResult } from '../types/weather';
 import { TouchableOpacity, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from './ui/Icon';
 
 interface SearchResultItemProps {
   result: SearchLocationResult;
@@ -18,6 +18,6 @@ export const SearchResultItem = ({ result, onPress }: SearchResultItemProps) => 
         <Text className="text-white/60 text-sm">{result.country}</Text>
       )}
     </View>
-    <Icon name="chevron-forward" size={20} color="rgba(255,255,255,0.4)" />
+    <Icon name="ChevronRight" size={20} color="rgba(255,255,255,0.4)" />
   </TouchableOpacity>
 );

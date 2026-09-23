@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -66,21 +67,21 @@ function DashboardContent({
       id: 'humidity',
       label: 'Humidity',
       value: `${current.main.humidity}%`,
-      icon: 'water-outline',
+      icon: 'Droplets',
       progress: current.main.humidity / 100,
     },
     {
       id: 'wind',
       label: 'Wind',
       value: `${Math.round(current.wind.speed)} m/s`,
-      icon: 'flag-outline',
+      icon: 'Wind',
       progress: Math.min(current.wind.speed / 30, 1),
     },
     {
       id: 'pressure',
       label: 'Pressure',
       value: `${current.main.pressure} hPa`,
-      icon: 'speedometer-outline',
+      icon: 'Gauge',
       progress: Math.min(
         Math.max((current.main.pressure - 950) / (1050 - 950), 0),
         1,
@@ -90,21 +91,21 @@ function DashboardContent({
       id: 'precipitation',
       label: 'Precip Chance',
       value: `${Math.round((daily[0]?.pop ?? 0) * 100)}%`,
-      icon: 'umbrella-outline',
+      icon: 'Umbrella',
       progress: daily[0]?.pop ?? 0,
     },
     {
       id: 'visibility',
       label: 'Visibility',
       value: `${(current.visibility / 1000).toFixed(1)} km`,
-      icon: 'eye-outline',
+      icon: 'Eye',
       progress: Math.min(current.visibility / 10000, 1),
     },
     {
       id: 'clouds',
       label: 'Cloud Cover',
       value: `${current.clouds?.all ?? 0}%`,
-      icon: 'cloud-outline',
+      icon: 'Cloud',
       progress: (current.clouds?.all ?? 0) / 100,
     },
   ];
@@ -114,7 +115,7 @@ function DashboardContent({
       <StatusBar barStyle="dark-content" backgroundColor="#F5F7F8" />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={StyleSheet.create({ content: { paddingBottom: 32 } }).content}
       >
         {updateError && (
           <View className="bg-amber-500 px-4 py-2 flex-row items-center justify-between">

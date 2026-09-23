@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { ForecastItem } from '../../types/weather';
 import { colors } from '../../constants/colors';
 
@@ -17,13 +17,9 @@ function HourlyCard({ item }: HourlyCardProps) {
   return (
     <View
       className="w-16 items-center rounded-2xl p-2.5"
-      style={{
-        backgroundColor: colors.primaryLight,
-        borderWidth: 1,
-        borderColor: colors.border,
-      }}
+      style={styles.card}
     >
-      <Text className="text-xs" style={{ color: colors.textSecondary }}>
+      <Text className="text-xs" style={styles.time}>
         {time}
       </Text>
       <Image
@@ -32,14 +28,25 @@ function HourlyCard({ item }: HourlyCardProps) {
         }}
         className="h-9 w-9"
       />
-      <Text className="text-sm font-bold" style={{ color: colors.textPrimary }}>
+      <Text className="text-sm font-bold" style={styles.temp}>
         {Math.round(item.main.temp)}°
       </Text>
-      <Text className="text-[10px]" style={{ color: precipColor }}>
+      <Text className="text-[10px]" style={[styles.precip, { color: precipColor }]}>
         {precip}%
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: colors.primaryLight,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  time: { color: colors.textSecondary },
+  temp: { color: colors.textPrimary },
+  precip: {},
+});
 
 export default HourlyCard;

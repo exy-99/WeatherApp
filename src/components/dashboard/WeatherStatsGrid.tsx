@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -24,7 +24,7 @@ function StatCard({ stat }: { stat: StatMetric }) {
   }));
   return (
     <Animated.View
-      style={[{ marginBottom: 8, width: '48%' }, animatedStyle]}
+      style={[styles.statCard, animatedStyle]}
       onTouchStart={() => {
         'worklet';
         scale.value = withSpring(0.97);
@@ -35,7 +35,7 @@ function StatCard({ stat }: { stat: StatMetric }) {
       }}
       accessibilityRole="none"
     >
-      <Card className="w-full" style={{ padding: 12 }}>
+      <Card className="w-full" style={styles.cardPadding}>
         <View className="flex-row items-center justify-between">
           <Icon name={stat.icon} size={18} color={colors.primaryDark} />
           <Text className="text-base font-bold" style={{ color: colors.textPrimary }}>
@@ -62,5 +62,10 @@ function WeatherStatsGrid({ stats }: WeatherStatsGridProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  statCard: { marginBottom: 8, width: '48%' },
+  cardPadding: { padding: 12 },
+});
 
 export default WeatherStatsGrid;

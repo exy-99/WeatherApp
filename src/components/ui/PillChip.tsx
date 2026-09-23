@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -59,13 +59,18 @@ export default function PillChip({ label, icon, variant, onPress, accessibilityL
       className="flex-row items-center rounded-full px-4 py-2.5 gap-1.5"
     >
       <Animated.View
-        style={[{ flexDirection: 'row', alignItems: 'center', gap: 6 }, animatedStyle]}
+        style={[styles.iconLabelRow, animatedStyle]}
       >
         {icon ? <Icon name={icon} size={16} color={variantStyle.textColor} /> : null}
-        <Text className="text-sm font-medium" style={{ color: variantStyle.textColor }}>
+        <Text className="text-sm font-medium" style={[styles.label, { color: variantStyle.textColor }]}>
           {label}
         </Text>
       </Animated.View>
     </AnimatedPressable>
   );
 }
+
+const styles = StyleSheet.create({
+  iconLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  label: {},
+});

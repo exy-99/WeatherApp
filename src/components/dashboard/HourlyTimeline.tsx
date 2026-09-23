@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -53,7 +53,7 @@ function HourlyTimeline({ hours }: HourlyTimelineProps) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 12 }}
+          contentContainerStyle={styles.scrollContent}
         >
           {hours.map((item, index) => (
             <AnimatedHourlyCard key={item.dt} item={item} index={index} />
@@ -63,5 +63,9 @@ function HourlyTimeline({ hours }: HourlyTimelineProps) {
     </Card>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollContent: { gap: 12 },
+});
 
 export default HourlyTimeline;

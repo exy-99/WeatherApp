@@ -12,7 +12,7 @@ export function useWeatherInsights(
     chips.push({
       id: 'umbrella',
       label: 'Carry umbrella',
-      icon: 'umbrella-outline',
+      icon: 'Umbrella',
       variant: 'primary',
     });
   }
@@ -20,7 +20,7 @@ export function useWeatherInsights(
     chips.push({
       id: 'heat',
       label: 'Extreme heat — hydrate',
-      icon: 'thermometer-outline',
+      icon: 'Thermometer',
       variant: 'warning',
     });
   }
@@ -28,7 +28,7 @@ export function useWeatherInsights(
     chips.push({
       id: 'wind',
       label: 'Windy — stay safe',
-      icon: 'flag-outline',
+      icon: 'Wind',
       variant: 'secondary',
     });
   }
@@ -36,7 +36,7 @@ export function useWeatherInsights(
     chips.push({
       id: 'humidity',
       label: 'Humid — stay cool',
-      icon: 'water-outline',
+      icon: 'Droplets',
       variant: 'secondary',
     });
   }
@@ -44,7 +44,7 @@ export function useWeatherInsights(
     chips.push({
       id: 'outdoor',
       label: 'Great for outdoors',
-      icon: 'sunny-outline',
+      icon: 'Sun',
       variant: 'secondary',
     });
   }

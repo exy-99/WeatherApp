@@ -47,7 +47,7 @@ function WeatherInsightCard({
           {condition}
         </Text>
         <View className="mt-1 flex-row items-center">
-          <Icon name="water-outline" size={12} color={colors.textSecondary} />
+          <Icon name="Droplets" size={12} color={colors.textSecondary} />
           <Text className="ml-1 text-xs" style={{ color: colors.textSecondary }}>
             {Math.round(precipitation * 100)}% precipitation
           </Text>

@@ -20,7 +20,7 @@ function LocationDateStrip({ location, date }: LocationDateStripProps) {
   return (
     <View className="flex-row items-center justify-between px-5">
       <View className="flex-row items-center">
-        <Icon name="location-outline" size={14} color={colors.textMuted} />
+        <Icon name="MapPin" size={14} color={colors.textMuted} />
         <Text
           className="ml-1 text-xs font-medium"
           style={{ color: colors.textMuted }}
